@@ -72,6 +72,9 @@ typedef struct _modbus_rtu {
 #endif
     /* To handle many slaves on the same link */
     int confirmation_to_ignore;
+	
+	//LCY:客户端从机地址过滤 0:只接收modbus_set_slave中从机地址 1:接收所有地址
+	int server_accept_all_slaves;
 } modbus_rtu_t;
 
 #endif /* MODBUS_RTU_PRIVATE_H */

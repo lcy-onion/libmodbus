@@ -347,6 +347,7 @@ static int _modbus_rtu_pre_check_confirmation(modbus_t *ctx,
    errno to EMBBADCRC. */
 static int _modbus_rtu_check_integrity(modbus_t *ctx, uint8_t *msg, const int msg_length)
 {
+	modbus_rtu_t *ctx_rtu = (modbus_rtu_t *)ctx->backend_data;
     uint16_t crc_calculated;
     uint16_t crc_received;
     int slave = msg[0];
@@ -371,7 +372,7 @@ static int _modbus_rtu_check_integrity(modbus_t *ctx, uint8_t *msg, const int ms
     }
 
     /* Filter on the Modbus unit identifier (slave) in RTU mode */
-    if (slave != ctx->slave && slave != MODBUS_BROADCAST_ADDRESS) {
+    if (slave != ctx->slave && slave != MODBUS_BROADCAST_ADDRESS && ctx_rtu->server_accept_all_slaves == 0) {
         if (ctx->debug) {
             printf("Request for slave %d ignored (not %d)\n", slave, ctx->slave);
         }
@@ -1283,6 +1284,14 @@ modbus_new_rtu(const char *device, int baud, char parity, int data_bit, int stop
 #endif
 
     ctx_rtu->confirmation_to_ignore = FALSE;
+	
+	ctx_rtu->server_accept_all_slaves = FALSE;
 
     return ctx;
+}
+
+void modbus_rtu_server_accept_all_slaves(modbus_t *ctx,int enable)
+{
+	modbus_rtu_t *ctx_rtu = ctx->backend_data;
+	ctx_rtu->server_accept_all_slaves = enable;
 }

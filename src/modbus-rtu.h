@@ -19,6 +19,8 @@ MODBUS_BEGIN_DECLS
 MODBUS_API modbus_t *
 modbus_new_rtu(const char *device, int baud, char parity, int data_bit, int stop_bit);
 
+MODBUS_API void modbus_rtu_server_accept_all_slaves(modbus_t *ctx,int enable);
+
 #define MODBUS_RTU_RS232 0
 #define MODBUS_RTU_RS485 1
 
